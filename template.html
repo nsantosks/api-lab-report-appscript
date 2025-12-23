@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* --- Estilos Generales y de Diseño --- */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7f9;
+      color: #333;
+      font-size: 14px;
+    }
+    .invoice-container {
+      max-width: 800px;
+      margin: 25px auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      padding: 40px;
+    }
+    /* --- Encabezado --- */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    .header .logo {
+      max-width: 150px;
+      max-height: 150px;
+    }
+    .header .invoice-details {
+      text-align: right;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 32px;
+      color: #0081E2;
+      font-weight: 700;
+    }
+    .header p {
+      margin: 4px 0 0;
+      font-size: 14px;
+      color: #555;
+    }
+    /* --- Información del Cliente --- */
+    .customer-info {
+      margin-bottom: 30px;
+    }
+    .customer-info h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #0081E2; /* Color primario */
+      border-bottom: 1px solid #e9ecef;
+      padding-bottom: 8px;
+      font-weight: 600;
+    }
+    /* --- Tabla de Productos --- */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    .items-table th, .items-table td {
+      border-bottom: 1px solid #e9ecef;
+      padding: 12px;
+      text-align: left;
+    }
+    .items-table th {
+      background-color: #f4f7f9;
+      font-weight: 600;
+      color: #333;
+    }
+    .items-table .align-right {
+      text-align: right;
+    }
+    /* --- Totales y Notas --- */
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .summary .notes {
+      width: 50%;
+    }
+    .summary .notes h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #0081E2;
+    }
+    .summary .totals {
+      width: 45%;
+      text-align: right;
+    }
+    .summary .totals p {
+      margin: 8px 0;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .summary .totals .sub-total {
+      margin-top: 10px;
+      padding-top: 10px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .summary .totals .grand-total {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 2px solid #1a2533;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    /* --- Pie de Página --- */
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #e9ecef;
+      font-size: 12px;
+      color: #888;
+    }
+    /* --- Estilos de Impresión --- */
+    @media print {
+      body {
+        background-color: #fff;
+      }
+      .invoice-container {
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+        border-radius: 0;
+      }
+      .footer, .print-button {
+        display: none;
+      }
+    }
+    .print-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      background-color: #0081E2;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="invoice-container">
+    <!-- ENCABEZADO: LOGO Y DETALLES DE FACTURA -->
+    <div class="header">
+      <div>
+        <!-- Reemplaza LOGO DE EMPRESA -->
+        <!-- <img src= <?= Venta.imgurlempresa ?> alt="Logo de la Empresa" class="logo"> -->
+      </div>
+      <div class="invoice-details">
+        <h1>COTIZACIÓN DE SERVICIOS</h1>
+        <p><strong>N°:</strong> <?= Venta.numFactura ?></p>
+        <p><strong>Fecha:</strong> <?= Venta.fecha ?></p>
+        <p><strong>Nro de Muestra:</strong> <?= Venta.lote ?></p>
+      </div>
+    </div>
+
+    <!-- INFORMACIÓN DEL CLIENTE -->
+    <div class="customer-info">
+      <h2>PACIENTE O RAZÓN SOCIAL:</h2>
+      <p><strong><?= Venta.nombreCliente ?></strong></p>
+      <p>Teléfono: <?= Venta.telefonoCliente ?></p>
+    </div>
+
+    <!-- TABLA DE PRODUCTOS -->
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>Descripción</th>
+          <th class="align-right">Cantidad</th>
+          <th class="align-right">Precio Unitario</th>
+          <th class="align-right">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Bucle para iterar sobre la lista de productos -->
+        <? for (let i = 0; i < Productos.length; i++) { ?>
+          <tr>
+            <td><?= Productos[i].producto ?></td>
+            <td class="align-right"><?= Productos[i].cantidad ?></td>
+            <td class="align-right"><?= Productos[i].precio ?></td>
+            <td class="align-right"><?= Productos[i].subtotal ?></td>
+          </tr>
+        <? } ?>
+      </tbody>
+    </table>
+
+    <!-- RESUMEN: NOTAS Y TOTALES -->
+    <div class="summary">
+      <div class="notes">
+        <h3>Notas:</h3>
+        <p><?= Venta.notas ?></p>
+      </div>
+      <div class="totals">
+        <!-- Puedes añadir más campos como Subtotal o Impuestos si los tienes -->
+        <p class="sub-total">
+          <span>SUB TOTAL</span>
+          <span><?= Venta.subtotales ?></span>
+        </p>
+        <p class="sub-total">
+          <span>Descuentos</span>
+          <span><?= Venta.dctostotales ?></span>
+        </p>
+        <p class="sub-total">
+          <span>Otros Cargos</span>
+          <span><?= Venta.otroscargostotales ?></span>
+        </p>
+        <p class="grand-total">
+          <span>TOTAL</span>
+          <span><?= Venta.total ?></span>
+        </p>
+      </div>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <div class="footer">
+      <p>¡Gracias por preferirnos!</p>
+      <p>Si tiene alguna pregunta sobre esta Cotización, contáctenos.</p>
+    </div>
+  </div>
+
+  <button class="print-button" onclick="window.print()">Imprimir Cotización</button>
+
+</body>
+</html>
